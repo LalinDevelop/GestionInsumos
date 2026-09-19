@@ -1,0 +1,309 @@
+﻿@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+
+<link href="~/template/app-assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/template/app-assets/vendors/css/tables/datatable/select.dataTables.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/template/app-assets/fonts/simple-line-icons/style.min.css">
+<link href="~/template/app-assets/vendors/css/extensions/sweetalert2.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/template/app-assets/css/plugins/extensions/add-on-drag-drop.css">
+<link rel="stylesheet" type="text/css" href="~/template/app-assets/vendors/css/forms/icheck/icheck.css">
+<link rel="stylesheet" type="text/css" href="~/template/app-assets/vendors/css/forms/icheck/custom.css">
+
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="content-wrapper">
+
+
+        <!-- HEADER -->
+        <div class="content-header row">
+            <div class="content-header-left col-md-6 col-12 mb-2">
+                <h3 class="content-header-title mb-0">Gestion papeleria oficina</h3>
+                <div class="row breadcrumbs-top">
+                    <div class="breadcrumb-wrapper col-12">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="../Home/Index">Inicio</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                               Confirmacion de solicitudes
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-body">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs" id="tabsSolicitudes" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="tab-SolicitudesPendientes-tab" data-toggle="tab" href="#tab-SolicitudesPendientes" role="tab" aria-controls="tab-SolicitudesPendientes" aria-selected="true">
+                                <i ></i> Solicitudes pendientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tab-Solicitudes-tab" data-toggle="tab" href="#tab-Solicitudes" role="tab" aria-controls="tab-Solicitudes" aria-selected="false">
+                                <i ></i> Solicitudes
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-content">
+                    <div class="card-body">
+                        <div class="tab-content">
+
+                            <!-- ===================== TAB: NUEVA SOLICITUD ===================== -->
+                            <div class="tab-pane active" id="tab-SolicitudesPendientes" role="tabpanel" aria-labelledby="tab-SolicitudesPendientes-tab">                                              
+                          
+                                <div class="table-responsive mt-1">
+                                    <table class="table table-bordered table-striped" id="tablaDetalleSolicitud">
+                                        <thead>
+                                            <tr>
+                                                <th>Solicitud</th>
+                                                <th>Area</th>
+                                                <th>Usuario</th>
+                                                <th>Estado</th>
+                                                <th >Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyDetalleSolicitud">
+                                            <!-- Las partidas agregadas se pintan aqui via JS -->
+                                            <tr id="filaSinPartidas">
+                                                <td colspan="4" class="text-center text-muted">
+                                                   No hay solicitudes pendientes de aprobacion o de entrega
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- ===================== FIN TAB: NUEVA SOLICITUD ===================== -->
+                            <!-- ===================== TAB: MIS SOLICITUDES ===================== -->
+                            <div class="tab-pane" id="tab-Solicitudes" role="tabpanel" aria-labelledby="tab-Solicitudes-tab">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-hover" id="tablaSolicitudes" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Solicitud</th>
+                                                <th>Fecha</th>
+                                                <th>Estado</th>
+                                                <th>Comentarios</th>
+                                                <th>Observaciones</th>
+                                                <th>Acciones</th> 
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- DataTable la llena via ajax; ordenar por prioridad de Estado (Pendiente/Autorizada primero) -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                            <!-- ===================== FIN TAB: MIS SOLICITUDES ===================== -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== MODAL: DETALLE DE SOLICITUD ===================== -->
+        <div class="modal fade" id="modalDetalleSolicitud" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detalle de Solicitud <span id="lblFolioModal"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="tablaDetalleModal" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Insumo</th>
+                                        <th>Solicitado</th>
+                                        <th>Entregado</th>
+                                        <th>Pendiente</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ===================== MODAL: APROBAR SOLICITUD ===================== -->
+        <div class="modal fade" id="modalAprobarSolicitud" tabindex="-1" role="dialog" aria-hidden="true">
+
+            <div class="modal-dialog modal-lg" role="document">
+
+                <div class="modal-content">
+
+                    <!-- HEADER -->
+                    <div class="modal-header">
+
+                        <div>
+                            <h5 class="modal-title">
+                                Aprobar Solicitud
+                            </h5>
+
+                            <div class="mt-1">
+                                <strong>
+                                    Solicitud:
+                                    <span id="lblFolioAprobacion"
+                                          class="text-primary"></span>
+                                </strong>
+                            </div>
+                        </div>
+
+                        <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close">
+
+                            <span aria-hidden="true">&times;</span>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Revise las cantidades solicitadas y establezca las unidades que serán autorizadas.
+                        </div>
+
+
+                        <!-- TABLA DE ARTICULOS -->
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered table-striped"
+                                   id="tablaAprobacionSolicitud"
+                                   width="100%">
+
+                                <thead class="thead-light">
+
+                                    <tr>
+                                        <th>Insumo</th>
+                                        <th style="width:140px;">
+                                            Solicitadas
+                                        </th>
+                                        <th style="width:160px;">
+                                            Autorizadas
+                                        </th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="tbodyAprobacionSolicitud">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <!-- OBSERVACIONES -->
+                        <div class="form-group mt-3">
+
+                            <label class="font-weight-bold">
+                                Observaciones
+                            </label>
+
+                            <textarea id="txtObservacionesAprobacion"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Ingrese observaciones sobre la aprobación de la solicitud..."></textarea>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-dismiss="modal">
+
+                            Cancelar
+
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-danger"
+                                id="btnRechazarSolicitud">
+
+                            <i class="fas fa-times"></i>
+                            Rechazar solicitud
+
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-success"
+                                id="btnConfirmarAprobacion">
+
+                            <i class="fas fa-check"></i>
+                            Confirmar aprobación
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <!-- ===================== FIN MODAL ===================== -->
+    </div>
+</div>
+
+@section scripts {
+
+    <script src="~/template/app-assets/vendors/js/tables/jquery.dataTables.min.js"></script>
+
+    <!-- Botones DataTables -->
+    <script src="~/template/app-assets/vendors/js/tables/datatable/dataTables.buttons.min.js"></script>
+
+    <!-- Dependencia Excel -->
+    <script src="~/template/app-assets/vendors/js/tables/jszip.min.js"></script>
+
+    <!-- Export Excel -->
+    <script src="~/template/app-assets/vendors/js/tables/buttons.html5.min.js"></script>
+    <!-- Bootstrap para botones -->
+    <script src="~/template/app-assets/vendors/js/tables/datatable/buttons.bootstrap4.min.js"></script>
+
+    <script src="~/template/app-assets/vendors/js/tables/datatable/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/template/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <script src="~/template/app-assets/vendors/js/tables/datatable/dataTables.select.min.js"></script>
+
+
+    <script src="~/template/app-assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
+    <script src="~/template/app-assets/vendors/js/extensions/dragula.min.js"></script>
+    <script src="~/template/app-assets/js/scripts/extensions/add-on-drag-drop.js"></script>
+    <script src="~/js/Dashboard/Printer.js"></script>
+    <script src="~/js/Utilerias/Spinner.js"></script>
+    <script src="~/js/Dashboard/SweetAlert.js"></script>
+    <script src="~/js/Utilerias/ReadExcelSheetJS.js" type="text/javascript"></script>
+    <script src="~/js/GestionControlPapeleria/Confirmacion.js?v=1.0.2"></script>
+}
